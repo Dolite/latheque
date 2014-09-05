@@ -1,11 +1,11 @@
 {
-    "name": "latheque2",
+    "name": "latheque",
     "version": "0.1.0",
     "description": "Un gestionnaire de contenu de médiathèque personnelle",
 
     "author": {
-        "name": "Théo Satabin",
-        "email": "theo.satabin@gmail.com"
+        "name": "Dolite",
+        "email": "monsieur.dolite@gmail.com"
     },
 
     "dependencies": {
@@ -13,10 +13,4 @@
         "mongoose": "~3.6.13",
         "body-parser": "~1.0.1"
     },
-
-    "scripts": {
-        "start": "node server"
-    },
-
-    "main": "server.js"
 }
