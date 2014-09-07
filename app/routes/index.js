@@ -12,6 +12,7 @@ module.exports = function(){
 	});
 
 	router.use('/objects', require('./object'));
+	router.use('/database', require('./database'));
 
 	return router;
 }();

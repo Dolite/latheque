@@ -1,11 +1,16 @@
 {
     "name": "latheque",
     "version": "0.0.0",
-    "description": "Un gestionnaire de contenu de médiathèque personnelle",
+    "description": "Un gestionnaire de contenu de N-thèque",
 
     "author": {
         "name": "Dolite",
         "email": "monsieur.dolite@gmail.com"
+    },
+
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Dolite/latheque.git"
     },
 
     "dependencies": {
