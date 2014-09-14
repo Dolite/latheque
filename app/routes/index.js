@@ -1,6 +1,6 @@
 module.exports = function(){
 
-	var express    = require('express');
+	var express = require('express');
 	var router = express.Router();
 
 	// route middleware that will happen on every request
@@ -12,7 +12,7 @@ module.exports = function(){
 	});
 
 	router.use('/objects', require('./object'));
-	router.use('/database', require('./database'));
+	router.use('/connection', require('./connection'));
 
 	return router;
 }();

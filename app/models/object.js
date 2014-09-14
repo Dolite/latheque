@@ -1,54 +1,63 @@
-/**************** Classe ********************/
+/*********************** Classe **************************/
 
 var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
 var ObjectSchema   = new Schema({
 	name: String,
-	type: String,
+	type: String
 });
 
-var objectModel = mongoose.model('Object', ObjectSchema);
+/********************** Méthodes *************************/
 
-/*************** Fonctions ******************/
-
-var getById = function (id, callback) {
-
-	var query = objectModel.findById(id);
-	query.exec( callback );
-}
-
-module.exports.getById = getById;
-
-var create = function (attributes ,callback) {
+ObjectSchema.methods.create = function (attributes ,callback) {
 	var obj = new objectModel();
 	obj.name = attributes.name;
 	obj.type = attributes.type;
+
+	console.log("toto");
 
 	// save the obj and check for errors
 	obj.save( callback );
 }
 
-module.exports.create = create;
+ObjectSchema.methods.getById = function (id, callback) {
 
-var remove = function (id ,callback) {
+	var query = objectModel.findById(id);
+	query.exec( callback );
+}
+
+ObjectSchema.methods.remove = function (id ,callback) {
 	objectModel.findByIdAndRemove(id, callback);
 }
 
-module.exports.remove = remove;
-
-var getAttributes = function (callback) {
+ObjectSchema.methods.getAttributes = function (callback) {
 	objectModel.distinct(attribute, callback);
 }
 
-module.exports.getAttributes = getAttributes;
-
-var getAttributeValues = function (attribute ,callback) {
+ObjectSchema.methods.getAttributeValues = function (attribute ,callback) {
 	objectModel.distinct(attribute, callback);
 }
 
-module.exports.getAttributeValues = getAttributeValues;
+/******* Création du modèle à partir du schéma ***********/
+
+var objectModel = mongoose.model('Object', ObjectSchema);
+
+/************ Mise à disposition du modèle ***************/
+
+module.exports.model = objectModel;
 
 
 
 
+
+
+/* Au cas où...
+personSchema.virtual('name.full').get(function () {
+  return this.name.full;
+}).set(function(name) {
+  var split = name.split(' ');
+  this.name.first = split[0];
+  this.name.last = split[1];
+});
+*/

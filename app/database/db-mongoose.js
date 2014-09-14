@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 
+var activeConnection;
+
 // CONNECTION EVENTS
 // When successfully connected
 mongoose.connection.on('connected', function () {
@@ -14,17 +16,18 @@ mongoose.connection.on('error',function (err) {
 // When the connection is disconnected
 mongoose.connection.on('disconnected', function () {
 	console.log('Mongoose connection disconnected');
+	activeConnection = null;
+	console.log("state : " + mongoose.connection.readyState)
 });
-/*
+
 // If the Node process ends, close the Mongoose connection
 process.on('SIGINT', function() {
 	mongoose.connection.close(
 		function () {
 			console.log('Mongoose connection disconnected through app termination');
-			// process.exit(0);
 		}
 	);
-});*/
+});
 
 var connect = function(params, callback) {
 
@@ -38,11 +41,38 @@ var connect = function(params, callback) {
 
 	var connString =
 		'mongodb://' +
-		params.db_user + ':' + params.db_passwd +
+		params.user + ':' + params.passwd +
 		'@' +
-		params.db_host + '/' + params.db_name;
+		params.host + ':' + params.port + '/' + params.dbname;
 
-	mongoose.connect(connString, callback);
+	mongoose.connect(
+		connString,
+		function(err) {
+			if (! err) {
+				// On stocke tout ces paramètres dans activeConnection pour pouvoir les fournir s'ils sont demandés
+				activeConnection = {
+					type:"MongoDB",
+					host:params.host,
+					port:params.port,
+					dbname:params.dbname
+				};
+			}
+			
+			callback(err, activeConnection);
+		}
+	);
 }
 
 module.exports.connect = connect;
+
+var disconnect = function(callback) {
+	mongoose.connection.close(callback);
+}
+
+module.exports.disconnect = disconnect;
+
+var getConnection = function() {
+	return activeConnection;
+}
+
+module.exports.getConnection = getConnection;

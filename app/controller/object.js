@@ -1,4 +1,4 @@
-var objectModel = require('../models/object');
+var objectModel = require('../models/object').model;
 
 var create = function (req ,res) {
 
@@ -23,7 +23,7 @@ var create = function (req ,res) {
 				return;
 			}
 			
-			res.status(200).json({message:"Successfully created", createdObject:obj});
+			res.status(200).json({message:"Successfully created", object:obj});
 		}
 	);
 }
@@ -46,7 +46,7 @@ var remove = function (req ,res) {
 				return;
 			}
 			
-			res.status(200).json({message:"Successfully removed", removedObject:obj});
+			res.status(200).json({message:"Successfully removed", object:obj});
 		}
 	);
 

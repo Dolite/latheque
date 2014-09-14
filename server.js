@@ -20,6 +20,11 @@ var port = 8081; 		// set our port
 
 app.use('/api', require('./app/routes/index'));
 
+app.on('close', function() {
+	// On écoute l'évènement close
+    console.log('Shutdown');
+});
+
 // START THE SERVER
 // =============================================================================
 app.listen(port);
