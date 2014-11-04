@@ -1,37 +1,61 @@
 var dbMongoose = require('../database/db-mongoose');
 
-var connect = function (req ,res, callback) {
+var activeConnection;
+
+var activeObjectModel;
+module.exports.activeObjectModel = activeObjectModel;
+var activeUserModel;
+module.exports.activeUserModel = activeUserModel;
+
+var updateModels = function () {
+
+	if (activeConnection == null) {
+		activeObjectModel = null;
+		activeUserModel = null;
+		return false;
+	}
+
+	var dbtype = activeConnection.type;
+
+	if (dbtype == 'MongoDB') {
+		activeObjectModel = require('../models/mongoose/object').model;
+		//activeUserModel = require('../models/mongoose/user').model;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+var connect = function (req ,res) {
+
+	if (activeConnection) {
+		res.status(500).json({
+			message:"A connection to a database is already active. Close it before connecting to a new database",
+			database:activeConnection
+		});
+		return;
+	}
+
 	if (! req.dbtype) { req.body.dbtype = 'MongoDB'};
 
 	if (req.body.dbtype == 'MongoDB') {
-
-		var activeConn = dbMongoose.getConnection();
-		if (activeConn) {
-			callback(
-				500,
-				"A connection to MongoDB database is already active. Close it before connecting to a new database",
-				activeConn
-			);
-			return;
-		}
 
 		dbMongoose.connect(
 			req.body,
 			function(err, dbinfos) {
 				if (err) {
-					callback(
-						500,
-						"Connection to MongoDB database failed : "+err,
-						dbinfos
-					);
+					res.status(500).json({message:"Connection to MongoDB database failed : "+err});
 					return;
 				}
 
-				callback(
-					200,
-					"Connection to MongoDB database established",
-					dbinfos
-				);
+				activeConnection = dbinfos;
+				updateModels();
+
+				res.status(200).json({
+					message:"Connection to MongoDB database established",
+					database:activeConnection
+				});
+
 				return;
 			}
 		);
@@ -48,10 +72,13 @@ var disconnect = function (req ,res) {
 		dbMongoose.disconnect(
 			function(err) {
 				if (err) {
-					res.status(500).json({message:"Disconnection from MongoDB database encontered problems : "+err}).end();
+					res.status(500).json({message:"Disconnection from MongoDB database encontered problems : "+err});
 					return;
 				}
-				
+
+				activeConnection = null;
+				updateModels();
+
 				res.status(200).json({message:"Successfully disconnection from MongoDB database"});
 				return;
 			}
@@ -64,16 +91,15 @@ var disconnect = function (req ,res) {
 module.exports.disconnect = disconnect;
 
 var getActiveConnection = function (req ,res) {
-	var connMongoDB = dbMongoose.getConnection();
-	if (connMongoDB) {
+	if (activeConnection) {
 		res.status(200).json({
 			message:"One connection is active",
-			database:connMongoDB
+			database:activeConnection
 		});
 		return;
 	} else {
 		res.status(200).json({message:"No active connection"});
-		return;		
+		return;
 	}
 }
 

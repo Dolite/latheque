@@ -1,7 +1,5 @@
 var mongoose = require('mongoose');
 
-var activeConnection;
-
 // CONNECTION EVENTS
 // When successfully connected
 mongoose.connection.on('connected', function () {
@@ -48,9 +46,9 @@ var connect = function(params, callback) {
 	mongoose.connect(
 		connString,
 		function(err) {
+			var dbinfos = null;
 			if (! err) {
-				// On stocke tout ces paramètres dans activeConnection pour pouvoir les fournir s'ils sont demandés
-				activeConnection = {
+				dbinfos = {
 					type:"MongoDB",
 					host:params.host,
 					port:params.port,
@@ -58,7 +56,7 @@ var connect = function(params, callback) {
 				};
 			}
 			
-			callback(err, activeConnection);
+			callback(err, dbinfos);
 		}
 	);
 }
@@ -66,13 +64,11 @@ var connect = function(params, callback) {
 module.exports.connect = connect;
 
 var disconnect = function(callback) {
-	mongoose.connection.close(callback);
+	mongoose.connection.close(
+		function(err){
+			callback(err);
+		}
+	);
 }
 
 module.exports.disconnect = disconnect;
-
-var getConnection = function() {
-	return activeConnection;
-}
-
-module.exports.getConnection = getConnection;

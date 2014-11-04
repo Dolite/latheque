@@ -6,10 +6,7 @@ module.exports = function(){
 	router.route('/')
 
 		.post(function(req, res) {
-			connectionController.connect(
-				req, res,
-				function(status, message, dbinfos)
-			);
+			connectionController.connect(req, res);
 		})
 
 		.delete(function(req, res) {

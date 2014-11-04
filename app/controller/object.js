@@ -1,4 +1,12 @@
-var objectModel = require('../models/object').model;
+var objectModel = require('../controller/connection').activeObjectModel;
+
+var checkModel = function () {
+	if (objectModel == null) {
+		return false;
+	}
+
+	return true;
+}
 
 var create = function (req ,res) {
 

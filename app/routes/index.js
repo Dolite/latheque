@@ -1,3 +1,8 @@
+/**
+ * @swagger
+ * resourcePath: /api
+ * description: All about API
+ */
 module.exports = function(){
 
 	var express = require('express');

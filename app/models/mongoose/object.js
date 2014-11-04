@@ -15,8 +15,6 @@ ObjectSchema.methods.create = function (attributes ,callback) {
 	obj.name = attributes.name;
 	obj.type = attributes.type;
 
-	console.log("toto");
-
 	// save the obj and check for errors
 	obj.save( callback );
 }

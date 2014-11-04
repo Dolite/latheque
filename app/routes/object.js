@@ -7,7 +7,7 @@ module.exports = function(){
 	/* Pour toutes ces fonctions, une connection doit être établie
 	 * On le teste là */
 
-	if (connectionController.getActiveConnection() == null) {
+	if (connectionController.getActiveConnection(req, res) == null) {
 		res.status(500).json({message:"No active connection to a database to request"});
 		return;
 	}
