@@ -1,55 +1,25 @@
-// server.js
-
-// BASE SETUP
-// =============================================================================
-
-// call the packages we need
-var express    = require('express'); 		// call express
-var app        = express(); 				// define our app using express
+var express    = require('express');
+var app        = express();
 var bodyParser = require('body-parser');
-var swagger    = require('swagger-express');
-var auth       = require('./app/authentification/auth-local');
+var mongodb   = require('mongodb');
+var routing    = require('./app/routes/index');
 
-// configure app to use bodyParser()
-// this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = 8081; 		// set our port
+var port = 8081;
 
-// AUTHENTIFICATION
-// =============================================================================
-
-
-
-// ROUTES FOR OUR API
-// =============================================================================
-
-app.use(swagger.init(app, {
-    apiVersion: '1.0',
-    swaggerVersion: '1.0',
-    swaggerURL: '/swagger',
-    swaggerJSON: '/api-docs.json',
-    swaggerUI: './public/swagger/',
-    basePath: 'http://localhost:3000',
-    apis: [],
-    middleware: function(req, res){}
-}));
-
-app.use(auth.initialize());
-app.use(auth.session());
-
-app.use(
-    '/api',
-    require('./app/routes/index')
-);
-
-app.on('close', function() {
-    // On écoute l'évènement close
+var clean = function () {
+    mongodb.Db.close();
     console.log('Shutdown');
-});
+    process.exit(1);
+}
 
-// START THE SERVER
-// =============================================================================
+app.use('/api', routing);
+
+app.on('close',clean);
+process.on('SIGINT', clean);
+process.on('SIGTERM', clean);
+
 app.listen(port);
 console.log('latheque started on port ' + port);

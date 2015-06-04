@@ -15,14 +15,11 @@
 
     "dependencies": {
         "express": "~4.0.0",
-        "mongoose": "~3.6.13",
-        "body-parser": "~1.0.1",
-        "passport": "~0.2.1",
-	"passport-http": "~0.2.2",
-	"swagger-express": "~1.0.5"
+        "mongodb": "~2.0.33",
+        "body-parser": "~1.0.1"
     },
 
     "scripts": {
-        "start": "nodejs server"
+        "start": "node server"
     }
 }
