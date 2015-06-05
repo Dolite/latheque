@@ -1,3 +1,5 @@
+/******************* DEFINITION DE LA BASE DE DONNEES ************************/
+
 var dblocale = [
     {
         "id":0,
@@ -52,6 +54,8 @@ var dblocale = [
     }
 ];
 
+/******************* METHODES SUR LA BASE DE DONNEES ************************/
+
 exports.get = function(id, callback) {
 
     if (id < dblocale.length && dblocale[id] != null) {
@@ -61,11 +65,32 @@ exports.get = function(id, callback) {
     }
 };
  
-exports.gets = function(callback) {
+exports.gets = function(filter, callback) {
+
     var objs = new Array();
-    for(i = 0; i < dblocale.length; i++) {
-        if (dblocale[i] != null) {
-            objs.push(dblocale[i]);
+    for(var i = 0; i < dblocale.length; i++) {
+        var obj = dblocale[i];
+        if (obj != null) {
+            var keep = true;
+            for (var j = 0; j < filteredAttributes.length; j++) {
+                var filteredAtt = filteredAttributes[j];
+                var re = new RegExp(filter[filteredAtt]);
+                if (re.exec(obj[filteredAtt]) == null) {
+                    keep=false;
+                    break;
+                }
+            }
+
+            if (! keep) {
+                continue;
+            }
+
+            var objReduce = new Object();
+            objReduce.id = obj.id;
+            objReduce.type = obj.type;
+            objReduce.title = obj.title;
+
+            objs.push(objReduce);
         }
     }
     callback(null, objs);

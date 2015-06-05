@@ -1,3 +1,5 @@
+/******************* DEFINITION DE LA BASE DE DONNEES ************************/
+
 var mongo = require('mongodb');
  
 var Server = mongo.Server,
@@ -28,45 +30,8 @@ db.open(
 );
 
 var collection = db.collection(collectionName);
-  
-exports.update = function(req, res) {
-    var id = req.params.id;
-    var object = req.body;
-    console.log('Updating object: ' + id);
-    console.log(JSON.stringify(object));
-    db.collection(collectionName, function(err, collection) {
-        collection.update({'_id':new BSON.ObjectID(id)}, object, {safe:true}, function(err, result) {
-            if (err) {
-                console.log('Error updating object: ' + err);
-                res.send({'error':'An error has occurred'});
-            } else {
-                console.log('' + result + ' document(s) updated');
-                res.send(object);
-            }
-        });
-    });
-}
- 
-exports.delete = function(req, res) {
-    var id = req.params.id;
-    console.log('Deleting object: ' + id);
-    db.collection(collectionName, function(err, collection) {
-        collection.remove({'_id':new BSON.ObjectID(id)}, {safe:true}, function(err, result) {
-            if (err) {
-                res.send({'error':'An error has occurred - ' + err});
-            } else {
-                console.log('' + result + ' document(s) deleted');
-                res.send(req.body);
-            }
-        });
-    });
-}
 
-
-
-
-
-
+/******************* METHODES SUR LA BASE DE DONNEES ************************/
 
 exports.get = function(id, callback) {
     collection.findOne(
@@ -82,8 +47,18 @@ exports.get = function(id, callback) {
     );
 };
  
-exports.gets = function(callback) {
-    collection.find().toArray(function(err, items) {
+exports.gets = function(filter, callback) {
+
+    var mongodbFilter = new Object();
+    var filteredAttributes = Object.keys(filter);
+    for (var i = 0; i < filteredAttributes.length; i++) {
+        var filteredAtt = filteredAttributes[i];
+        mongodbFilter[filteredAtt] = "/"+filter[filteredAtt]+"/";
+    }
+
+    console.log(JSON.stringify(mongodbFilter));
+
+    collection.find(JSON.stringify(mongodbFilter), "{ _id: 1, type: 1, title: 1 }").toArray(function(err, items) {
         if (err) {
             console.error(err);
             callback("No object in the database ?", null);

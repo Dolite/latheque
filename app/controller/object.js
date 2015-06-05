@@ -21,7 +21,6 @@ function getMissingAttributes (obj) {
 
 
 module.exports.findById = function (req ,res) {
-
     objectPersistence.get(
         req.params.id,
         function (err, result) {
@@ -37,6 +36,7 @@ module.exports.findById = function (req ,res) {
 module.exports.findAll = function (req ,res) {
 
     objectPersistence.gets(
+        req.query,
         function (err, result) {
             if (err) {
                 res.status(500).json({"message":err});
