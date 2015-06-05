@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 var port = 8081;
 
 var clean = function () {
-    mongodb.Db.close();
+	// TODO :fermer la connexion à la base de donnée
     console.log('Shutdown');
     process.exit(1);
 }

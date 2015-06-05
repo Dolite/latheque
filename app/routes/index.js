@@ -1,5 +1,4 @@
 /**
- * @swagger
  * resourcePath: /api
  * description: All about API
  */
