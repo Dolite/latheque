@@ -3,13 +3,12 @@
 var conn = require('./connection');
 var BSON = require('bson').BSONPure;
 
-// On ouvre la connexion à la base de donnée, et on vérifie l'existence de la collection 'objects'
-var collectionName = "objects";
+// On ouvre la connexion à la base de donnée, et on vérifie l'existence de la collection 'users'
+var collectionName = "users";
 
 var findAllProjection = {
     _id: 1,
-    type: 1,
-    title: 1 
+    name: 1
 };
 
 var collection = conn.connect(collectionName);
@@ -23,16 +22,9 @@ exports.get = function(id, callback) {
         function(err, item) {
             if (err) {
                 console.error(err);
-                callback("No object with ID "+id+" in the database", null);
+                callback("No user with ID "+id+" in the database", null);
             } else {
-                if (item.serie == null) {
-                    callback(null, item);
-                } else {
-                    collection.find({serie:item.serie, numero:{$ne:item.numero}}, findAllProjection).toArray(function(err, items2) {
-                        item.insameserie = items2;
-                        callback(null, item);
-                    });
-                }                
+                callback(null, item);
             }
         }
     );
@@ -56,21 +48,21 @@ exports.gets = function(filter, callback) {
     collection.find(mongodbFilter, findAllProjection).toArray(function(err, items) {
         if (err) {
             console.error(err);
-            callback("No object in the database ?", null);
+            callback("No user in the database ?", null);
         } else {
             callback(null, items);
         }
     });
 };
  
-exports.add = function(object, callback) {
+exports.add = function(user, callback) {
     collection.insert(
-        object,
+        user,
         {safe:true, multi:false},
         function(err, result) {
             if (err) {
                 console.error(err);
-                callback("Impossible to add a new object", null);
+                callback("Impossible to add a new user", null);
             } else {
                 callback(null, result);
             }
@@ -78,16 +70,16 @@ exports.add = function(object, callback) {
     );
 }
  
-exports.update = function(id, object, callback) {
+exports.update = function(id, user, callback) {
 
     collection.update(
         {'_id':new BSON.ObjectID(id)},
-        object,
+        user,
         {safe:true, multi:false},
         function(err, result) {
             if (err) {
                 console.error(err);
-                callback("Do not precise _id of the updated object in the body", null);
+                callback("Do not precise _id of the updated user in the body", null);
             } else {
                 callback(null, result);
             }
@@ -103,7 +95,7 @@ exports.delete = function(id, callback) {
         function(err, result) {
             if (err) {
                 console.error(err);
-                callback("No object with ID "+id+" in the database", null);
+                callback("No user with ID "+id+" in the database", null);
             } else {
                 callback(null, null);
             }

@@ -67,17 +67,22 @@ exports.get = function(id, callback) {
  
 exports.gets = function(filter, callback) {
 
+    var filteredAttributes = Object.keys(filter);
+
     var objs = new Array();
     for(var i = 0; i < dblocale.length; i++) {
         var obj = dblocale[i];
         if (obj != null) {
             var keep = true;
-            for (var j = 0; j < filteredAttributes.length; j++) {
-                var filteredAtt = filteredAttributes[j];
-                var re = new RegExp(filter[filteredAtt]);
-                if (re.exec(obj[filteredAtt]) == null) {
-                    keep=false;
-                    break;
+
+            if (filter != null) {
+                for (var j = 0; j < filteredAttributes.length; j++) {
+                    var filteredAtt = filteredAttributes[j];
+                    var re = new RegExp(filter[filteredAtt]);
+                    if (re.exec(obj[filteredAtt]) == null) {
+                        keep=false;
+                        break;
+                    }
                 }
             }
 
@@ -104,9 +109,7 @@ exports.add = function(object, callback) {
     callback(null, object);
 }
  
-exports.update = function(object, callback) {
-
-    var id = object.id;
+exports.update = function(id, object, callback) {
 
     if (id < dblocale.length && dblocale[id] != null) {
         object.id = id;

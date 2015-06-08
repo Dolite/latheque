@@ -1,25 +1,22 @@
 {
-    "name": "latheque",
-    "version": "0.0.0",
-    "description": "Un gestionnaire de contenu de N-thèque",
-
-    "author": {
-        "name": "Dolite",
-        "email": "monsieur.dolite@gmail.com"
-    },
-
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/Dolite/latheque.git"
-    },
-
-    "dependencies": {
-        "express": "~4.0.0",
-        "mongodb": "~2.0.33",
-        "body-parser": "~1.0.1"
-    },
-
-    "scripts": {
-        "start": "node server"
-    }
+  "name": "latheque",
+  "version": "0.0.0",
+  "description": "API de gestion de contenu d'une multi-thèque",
+  "author": {
+    "name": "Dolite",
+    "email": "monsieur.dolite@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dolite/latheque.git"
+  },
+  "dependencies": {
+    "body-parser": "~1.0.1",
+    "bson": "^0.3.2",
+    "express": "~4.0.0",
+    "mongodb": "~2.0.33"
+  },
+  "scripts": {
+    "start": "node server"
+  }
 }

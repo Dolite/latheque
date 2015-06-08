@@ -13,6 +13,7 @@ module.exports = function () {
     });
 
     router.use('/object', require('./object'));
+    router.use('/user', require('./user'));
 
     return router;
 

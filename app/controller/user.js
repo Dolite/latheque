@@ -1,10 +1,9 @@
-//var objectPersistence = require('../persistence/fakedb/object');
-var objectPersistence = require('../persistence/mongodb/object');
+var userPersistence = require('../persistence/mongodb/user');
 
 
 function getMissingAttributes (obj) {
     var mandatoryAttributes = [
-        'title', 'type'
+        'name'
     ];
 
     var missingAttributes = new Array();
@@ -21,7 +20,7 @@ function getMissingAttributes (obj) {
 
 
 module.exports.findById = function (req ,res) {
-    objectPersistence.get(
+    userPersistence.get(
         req.params.id,
         function (err, result) {
             if (err) {
@@ -35,7 +34,7 @@ module.exports.findById = function (req ,res) {
 
 module.exports.findAll = function (req ,res) {
 
-    objectPersistence.gets(
+    userPersistence.gets(
         req.query,
         function (err, result) {
             if (err) {
@@ -49,17 +48,17 @@ module.exports.findAll = function (req ,res) {
 
 module.exports.create = function (req ,res) {
 
-    var object = req.body;
+    var body = req.body;
 
-    var missingAttributes = getMissingAttributes(object);
+    var missingAttributes = getMissingAttributes(body);
 
     if (missingAttributes.length != 0) {
         res.status(400).json({"message":"Attribut(s) manquant(s) pour la création : " + missingAttributes});
         return;
     }
 
-    objectPersistence.add(
-        object,
+    userPersistence.add(
+        body,
         function (err, result) {
             if (err) {
                 res.status(400).json({"message":err});
@@ -72,18 +71,18 @@ module.exports.create = function (req ,res) {
 
 module.exports.update = function (req ,res) {
 
-    var object = req.body;
+    var body = req.body;
 
-    var missingAttributes = getMissingAttributes(object);
+    var missingAttributes = getMissingAttributes(body);
 
     if (missingAttributes.length != 0) {
         res.status(400).json({"message":"Attribut(s) manquant(s) pour la mise à jour : " + missingAttributes});
         return;
     }
 
-    objectPersistence.update(
+    userPersistence.update(
         req.params.id,
-        object,
+        body,
         function (err, result) {
             if (err) {
                 res.status(404).json({"message":err});
@@ -96,7 +95,7 @@ module.exports.update = function (req ,res) {
 
 module.exports.remove = function (req ,res) {
 
-    objectPersistence.delete(
+    userPersistence.delete(
         req.params.id,
         function (err, result) {
             if (err) {
